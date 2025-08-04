@@ -1,19 +1,18 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using BuggyTasks.Models;
+using BuggyTasks.Services;
+using System.Collections.ObjectModel;
 
 namespace BuggyTasks.ViewModels;
 
 public partial class TaskListViewModel : ObservableObject
 {
-    public ObservableCollection<TaskItem> Tasks { get; set; }
+    private readonly TaskService taskService;
 
-    public TaskListViewModel()
+    public ObservableCollection<TaskItem> Tasks => taskService.Tasks;
+
+    public TaskListViewModel(TaskService service)
     {
-        Tasks = new ObservableCollection<TaskItem>
-        {
-            new TaskItem { Title = "Test Task 1" },
-            new TaskItem { Title = "Test Task 2" }
-        };
+        taskService = service;
     }
 }

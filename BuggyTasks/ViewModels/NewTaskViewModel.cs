@@ -1,24 +1,25 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows.Input;
+using BuggyTasks.Services;
 
 namespace BuggyTasks.ViewModels;
 
 public partial class NewTaskViewModel : ObservableObject
 {
     [ObservableProperty]
-    string newTaskTitle;
+    string newTaskTitle = string.Empty;
 
-    public ICommand AddNewTaskCommand { get; } 
+    private readonly TaskService taskService;
 
-    public NewTaskViewModel()
+    public NewTaskViewModel(TaskService service)
     {
-        AddNewTaskCommand = new RelayCommand(OnAddTask);
+        taskService = service;
     }
 
-    void OnAddTask()
+    [RelayCommand]
+    void AddTask()
     {
-        // Simulate adding a task
-        Console.WriteLine($"Added task: {NewTaskTitle}");
+        taskService.AddTask(NewTaskTitle);
+        NewTaskTitle = string.Empty; // clear input
     }
 }

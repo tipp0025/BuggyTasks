@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace BuggyTasks.Views;
 
@@ -10,18 +11,33 @@ public partial class LocationPage : ContentPage
         InitializeComponent();
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        GetLocation(); 
+        await GetLocation();
     }
 
-    Task GetLocation()
+    async Task GetLocation()
     {
-        var location =  Geolocation.GetLastKnownLocationAsync(); 
-        if (location != null)
+        try
         {
-            Console.WriteLine($"Lat: {location.Latitude}, Long: {location.Longitude}");
+            var location = await Geolocation.GetLastKnownLocationAsync();
+
+            if (location != null)
+            {
+                LatLabel.Text = $"Latitude: {location.Latitude}";
+                LongLabel.Text = $"Longitude: {location.Longitude}";
+            }
+            else
+            {
+                LatLabel.Text = "Latitude: (not available)";
+                LongLabel.Text = "Longitude: (not available)";
+            }
+        }
+        catch (Exception ex)
+        {
+            LatLabel.Text = "Error retrieving location";
+            LongLabel.Text = ex.Message;
         }
     }
 }
